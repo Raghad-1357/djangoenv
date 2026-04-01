@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<h2>Search Results</h2>
+
+{% if books %}
+    <ul>
+    {% for book in books %}
+        <li>
+            {{ book.title }} - {{ book.author }}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No results !</p>
+{% endif %}
+
+{% endblock %}
