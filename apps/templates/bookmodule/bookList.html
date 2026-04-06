@@ -15,4 +15,10 @@
     <p>No results !</p>
 {% endif %}
 
+{% for obj in books %}
+    ID: {{ obj.id }}, Title: {{ obj.title }}
+    <hr>
+{% endfor %}
+
+
 {% endblock %}

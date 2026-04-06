@@ -8,6 +8,14 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Book
+
+#Use the constructor function
+mybook = Book(title = 'Continuous Delivery', author = 'J.Humble and D. Farley', edition = 1)
+mybook.save()
+#Use the create function
+mybook1 = Book.objects.create(title = 'Continuous Delivery11', author = 'J.Humble and D. Farley11', edition = 5)
+mybook1.save()
 
 # def index(request):
 #     name = request.GET.get("name") or "world!"  #add this line
@@ -19,6 +27,7 @@ from django.http import HttpResponse
 
 def index(request):
     name = request.GET.get("name") or "world!"
+    
     return render(request, "bookmodule/index.html" , {"name": name})  #your render line
 
 def index2(request, val1 = 0):   #add the view function (index2)
@@ -34,18 +43,17 @@ def viewbook(request, bookId):
     context = {'book':targetBook} # book is the variable name accessible by the template
     return render(request, 'bookmodule/show.html', context)
 
-def index(request):
-    return render(request, "bookmodule/index.html")
+# def index(request):
+#     return render(request, "bookmodule/index.html")
  
 def list_books(request):
     return render(request, 'bookmodule/list_books.html')
  
-def viewbook(request, bookId):
-    return render(request, 'bookmodule/one_book.html')
+# def viewbook(request, bookId):
+#     return render(request, 'bookmodule/one_book.html')
  
 def aboutus(request):
     return render(request, 'bookmodule/aboutus.html')
-
 
 def links(request):
     return render(request,"bookmodule/links.html")
@@ -99,3 +107,15 @@ def search_books(request):
 
     return render(request, 'bookmodule/search.html')
 
+# Lab 7
+
+def simple_query(request):
+    mybooks=Book.objects.filter(title__icontains='Continuous') # <- multiple objects
+    return render(request, 'bookmodule/bookList.html', {'books':mybooks})
+
+def complex_query(request):
+    mybooks=books=Book.objects.filter(author__isnull = False).filter(title__icontains='Continuous').filter(edition__gte = 2).exclude(price__lte = 100)[:10]
+    if len(mybooks)>=1:
+        return render(request, 'bookmodule/bookList.html', {'books':mybooks})
+    else:
+        return render(request, 'bookmodule/index.html')
