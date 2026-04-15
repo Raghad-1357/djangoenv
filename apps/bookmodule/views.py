@@ -9,13 +9,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
+from django.db.models import Q, Count, Sum, Avg, Max, Min
+from .models import Book, Student, Address
 
-#Use the constructor function
-mybook = Book(title = 'Continuous Delivery', author = 'J.Humble and D. Farley', edition = 1)
-mybook.save()
-#Use the create function
-mybook1 = Book.objects.create(title = 'Continuous Delivery11', author = 'J.Humble and D. Farley11', edition = 5)
-mybook1.save()
+
+# #Use the constructor function
+# mybook = Book(title = 'Continuous Delivery', author = 'J.Humble and D. Farley', edition = 1)
+# mybook.save()
+# #Use the create function
+# mybook1 = Book.objects.create(title = 'Continuous Delivery11', author = 'J.Humble and D. Farley11', edition = 5)
+# mybook1.save()
 
 # def index(request):
 #     name = request.GET.get("name") or "world!"  #add this line
@@ -119,3 +122,53 @@ def complex_query(request):
         return render(request, 'bookmodule/bookList.html', {'books':mybooks})
     else:
         return render(request, 'bookmodule/index.html')
+
+# Lab 8
+
+# Task 1
+def task1(request):
+    books = Book.objects.filter(Q(price__lte=80))
+    return render(request, 'bookmodule/task1.html', {'books': books})
+
+# Task 2
+def task2(request):
+    books = Book.objects.filter(
+        Q(edition__gt=3) & (Q(title__icontains='qu') | Q(author__icontains='qu'))
+    )
+    return render(request, 'bookmodule/task2.html', {'books': books})
+
+# Task 3
+def task3(request):
+    books = Book.objects.filter(
+        Q(edition__lte=3) & ~(Q(title__icontains='qu') | Q(author__icontains='qu'))
+    )
+    return render(request, 'bookmodule/task3.html', {'books': books})
+
+# Task 4
+def task4(request):
+    books = Book.objects.all().order_by('title')
+    return render(request, 'bookmodule/task4.html', {'books': books})
+
+# Task 5
+def task5(request):
+    stats = Book.objects.aggregate(
+        total_books=Count('id'),
+        total_price=Sum('price'),
+        avg_price=Avg('price'),
+        max_price=Max('price'),
+        min_price=Min('price')
+    )
+    return render(request, 'bookmodule/task5.html', {'stats': stats})
+
+# Task 7
+def task7(request):
+    data = Student.objects.values('address__city').annotate(count=Count('id'))
+    return render(request, 'bookmodule/task7.html', {'data': data})
+
+
+# http://127.0.0.1:8000/books/lab8/task1
+# http://127.0.0.1:8000/books/lab8/task2
+# http://127.0.0.1:8000/books/lab8/task3
+# http://127.0.0.1:8000/books/lab8/task4
+# http://127.0.0.1:8000/books/lab8/task5
+# http://127.0.0.1:8000/books/lab8/task7
