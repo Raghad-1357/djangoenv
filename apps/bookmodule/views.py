@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Book
 from django.db.models import Q, Count, Sum, Avg, Max, Min
-from .models import Book, Student, Address
+from .models import Book, Student, Address, Publisher, Author
 
 
 # #Use the constructor function
@@ -166,9 +166,59 @@ def task7(request):
     return render(request, 'bookmodule/task7.html', {'data': data})
 
 
-# http://127.0.0.1:8000/books/lab8/task1
-# http://127.0.0.1:8000/books/lab8/task2
-# http://127.0.0.1:8000/books/lab8/task3
-# http://127.0.0.1:8000/books/lab8/task4
-# http://127.0.0.1:8000/books/lab8/task5
-# http://127.0.0.1:8000/books/lab8/task7
+# ------------- LAB 9 ------------- 
+
+# Task 1: Books with percentage availability (Transient Field)
+def lab9_task1(request):
+    books = Book.objects.all()
+    total_books_count = books.count()
+    
+    for book in books:
+        if total_books_count > 0:
+            book.availability_pct = (book.quantity / total_books_count) * 100 
+        else:
+            book.availability_pct = 0
+            
+    return render(request, 'bookmodule/lab9_task1.html', {'books': books})
+
+
+# Task 2: Publishers with total book stock (Annotate)
+def lab9_task2(request):
+    publishers = Publisher.objects.annotate(total_stock=Count('book')) 
+    return render(request, 'bookmodule/lab9_task2.html', {'publishers': publishers})
+
+
+# Task 3: Oldest book for each publisher
+def lab9_task3(request):
+    publishers = Publisher.objects.annotate(oldest_book_date=Min('book__pubdate')) 
+    return render(request, 'bookmodule/lab9_task3.html', {'publishers': publishers})
+
+
+# Task 4: Average, Min, and Max price per publisher
+def lab9_task4(request):
+    publishers = Publisher.objects.annotate(
+        avg_price=Avg('book__price'),
+        min_price=Min('book__price'),
+        max_price=Max('book__price')
+    ) 
+    return render(request, 'bookmodule/lab9_task4.html', {'publishers': publishers})
+
+
+# Task 5: Publishers with count of highly rated books
+def lab9_task5(request):
+    publishers = Publisher.objects.annotate(
+        highly_rated_count=Count('book', filter=Q(book__rating__gte=4))
+    ) 
+    return render(request, 'bookmodule/lab9_task5.html', {'publishers': publishers})
+
+
+# Task 6: Complex filtering with annotations
+def lab9_task6(request):
+    publishers = Publisher.objects.annotate(
+        filtered_book_count=Count('book', filter=Q(
+            book__price__gt=50, 
+            book__quantity__lt=5, 
+            book__quantity__gte=1
+        ))
+    ) 
+    return render(request, 'bookmodule/lab9_task6.html', {'publishers': publishers})
