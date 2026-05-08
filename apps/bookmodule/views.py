@@ -1,17 +1,9 @@
-# from django.shortcuts import render
-
-# from django.http import HttpResponse
-# def index(request):
-#     return HttpResponse("Hello, world!")
-
-# from django.http import HttpResponse
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Book
 from django.db.models import Q, Count, Sum, Avg, Max, Min
 from .models import Book, Student, Address, Publisher, Author
-
+from .forms import BookForm
 
 # #Use the constructor function
 # mybook = Book(title = 'Continuous Delivery', author = 'J.Humble and D. Farley', edition = 1)
@@ -222,3 +214,72 @@ def lab9_task6(request):
         ))
     ) 
     return render(request, 'bookmodule/lab9_task6.html', {'publishers': publishers})
+
+
+# -----------------LAB 10-----------------
+
+# Task 1: قائمة الكتب
+def list_books_v1(request):
+    books = Book.objects.all()
+    return render(request, 'bookmodule/lab10_list_books.html', {'books': books})
+
+# Task 2: إضافة كتاب جديد
+def add_book_v1(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        price = request.POST.get('price')
+        Book.objects.create(title=title, author=author, price=price)
+        return redirect('list_books_v1')
+    return render(request, 'bookmodule/lab10_add_book.html')
+
+# Task 3: تعديل كتاب
+def edit_book_v1(request, id):
+    book = get_object_or_404(Book, id=id)
+    if request.method == "POST":
+        book.title = request.POST.get('title')
+        book.author = request.POST.get('author')
+        book.price = request.POST.get('price')
+        book.save()
+        return redirect('list_books_v1')
+    return render(request, 'bookmodule/lab10_edit_book.html', {'book': book})
+
+# Task 4: حذف كتاب
+def delete_book_v1(request, id):
+    book = get_object_or_404(Book, id=id)
+    book.delete()
+    return redirect('list_books_v1')
+
+# ------------------Part 2------------------
+
+# Task 1 (Part 2): القائمة
+def list_books_v2(request):
+    books = Book.objects.all()
+    return render(request, 'bookmodule/list_books_v2.html', {'books': books})
+
+# Task 2 (Part 2): إضافة باستخدام Form
+def add_book_v2(request):
+    form = BookForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('list_books_v2')
+    return render(request, 'bookmodule/form_book.html', {'form': form, 'title': 'إضافة كتاب جديد'})
+
+# Task 3 (Part 2): تعديل باستخدام Form
+def edit_book_v2(request, id):
+    book = get_object_or_404(Book, id=id)
+    form = BookForm(request.POST or None, instance=book)
+    if form.is_valid():
+        form.save()
+        return redirect('list_books_v2')
+    return render(request, 'bookmodule/form_book.html', {'form': form, 'title': 'تعديل الكتاب'})
+
+# Task 3 (Part 2): حذف باستخدام Form
+def delete_book_v2(request, id):
+    book = get_object_or_404(Book, id=id)
+    book.delete()
+    return redirect('list_books_v2')
+
+
+# http://127.0.0.1:8000/books/lab10_part1/list_books
+# http://127.0.0.1:8000/books/lab10_part2/listbooks

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h2>{{ title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <button type="submit">حفظ الكتاب</button>
+        <a href="{% url 'list_books_v2' %}">العودة للقائمة</a>
+    </form>
+
+    {% if form.errors %}
+        <div style="color: red;">
+            <strong>يرجى تصحيح الأخطاء التالية:</strong>
+            {{ form.errors }}
+        </div>
+    {% endif %}
+</body>
+</html>

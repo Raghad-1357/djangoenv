@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>قائمة الكتب (Forms)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        .btn { padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        .btn-add { background-color: #28a745; color: white; margin-bottom: 15px; display: inline-block; }
+        .btn-edit { background-color: #ffc107; color: black; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <div class="header-area">
+        <h2>إدارة الكتب (باستخدام Django Forms)</h2>
+        <a href="{% url 'add_book_v2' %}" class="btn btn-add">إضافة كتاب جديد (Form) +</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>العنوان</th>
+                <th>المؤلف</th>
+                <th>السعر</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.id }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.price }} $</td>
+                <td>
+                    <a href="{% url 'edit_book_v2' book.id %}" class="btn btn-edit">تعديل</a>
+                    <a href="{% url 'delete_book_v2' book.id %}" class="btn btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذا الكتاب؟')">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">لا توجد بيانات حالياً. أضف أول كتاب باستخدام النماذج!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{% url 'list_books_v1' %}">الذهاب إلى نسخة الجزء الأول (بدون Forms)</a>
+
+</body>
+</html>

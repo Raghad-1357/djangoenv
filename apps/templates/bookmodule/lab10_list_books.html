@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>قائمة الكتب</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .btn { padding: 5px 10px; text-decoration: none; border-radius: 3px; }
+        .btn-add { background-color: #28a745; color: white; }
+        .btn-edit { background-color: #ffc107; color: black; }
+        .btn-delete { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <h2>قائمة الكتب المتاحة</h2>
+    <a href="{% url 'add_book_v1' %}" class="btn btn-add">إضافة كتاب جديد +</a>
+    <br><br>
+    <table>
+        <thead>
+            <tr>
+                <th>العنوان</th>
+                <th>المؤلف</th>
+                <th>السعر</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.price }}</td>
+                <td>
+                    <a href="{% url 'edit_book_v1' book.id %}" class="btn btn-edit">تعديل</a>
+                    <a href="{% url 'delete_book_v1' book.id %}" class="btn btn-delete" onclick="return confirm('هل أنت متأكد؟')">حذف</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">لا توجد كتب حالياً.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
