@@ -1,0 +1,14 @@
+<h1>Task 1: Add Student (Single Address)</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Student</button>
+
+</form>
+
+<a href="{% url 'student_list' %}">Back to Student List</a>
+
+
+

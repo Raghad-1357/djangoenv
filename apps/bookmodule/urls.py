@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index),
@@ -40,4 +42,19 @@ urlpatterns = [
     path('lab10_part2/addbook', views.add_book_v2, name='add_book_v2'),
     path('lab10_part2/editbook/<int:id>', views.edit_book_v2, name='edit_book_v2'),
     path('lab10_part2/deletebook/<int:id>', views.delete_book_v2, name='delete_book_v2'),
+
+
+# ----------LAB 11-----------
+
+    path('lab11/addStudent', views.add_student, name='add_student'),
+    path('lab11/addStudent2', views.add_student2, name='add_student2'),
+    path('lab11/addProfile', views.add_profile, name='add_profile'),
+    path('lab11/students', views.student_list_view, name='student_list'),
+    path('lab11/students2', views.student_list_view2, name='student_list2'),
+    path('lab11/profiles', views.profile_list_view, name='profile_list'),
+    path('lab11/editStudent/<int:id>', views.edit_student, name='edit_student'),
+    path('lab11/editStudent2/<int:id>', views.edit_student2, name='edit_student2'),
+    path('lab11/deleteStudent/<int:id>', views.delete_student, name='delete_student'),
+    path('lab11/deleteStudent2/<int:id>', views.delete_student2, name='delete_student2'),
+
 ]

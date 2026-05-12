@@ -17,6 +17,26 @@ class Student(models.Model):
     def __str__(self):
         return self.name
     
+# -------------- LAB 11 --------------
+
+class Address2(models.Model): 
+    city = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.city
+
+class Student2(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    address = models.ManyToManyField(Address2)
+
+    def __str__(self):
+        return self.name
+
+class Profile(models.Model):
+    username = models.CharField(max_length=100)
+    profile_pic = models.ImageField(upload_to='profiles/')
+    
 # -------------- LAB 9 --------------
 
 class Publisher(models.Model):

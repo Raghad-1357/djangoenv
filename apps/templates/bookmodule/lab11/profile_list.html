@@ -1,0 +1,29 @@
+<h1>Profiles List</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Profile Picture</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in profiles %}
+        <tr>
+            <td>{{ profile.username }}</td>
+            <td>
+                {% if profile.profile_pic %}
+                    <img src="{{ profile.profile_pic.url }}" alt="Profile" style="width:100px;">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No profiles found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<a href="{% url 'add_profile' %}">Add New Profile</a>
