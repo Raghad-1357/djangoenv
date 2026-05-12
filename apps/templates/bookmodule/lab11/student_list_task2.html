@@ -1,3 +1,14 @@
+<nav>
+    {% if user.is_authenticated %}
+        <span>مرحباً، {{ user.username }}</span> | 
+        <a href="{% url 'logout' %}">تسجيل الخروج</a>
+    {% else %}
+        <a href="{% url 'login' %}">تسجيل الدخول</a> | 
+        <a href="{% url 'register' %}">تسجيل جديد</a>
+    {% endif %}
+</nav>
+<hr>
+
 <h1>Students List Task2</h1>
 <table border="1">
     <thead>

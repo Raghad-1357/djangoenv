@@ -5,6 +5,11 @@ from django.db.models import Q, Count, Sum, Avg, Max, Min
 from .models import *
 from .forms import *
 
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 
 # #Use the constructor function
 # mybook = Book(title = 'Continuous Delivery', author = 'J.Humble and D. Farley', edition = 1)
@@ -284,9 +289,9 @@ def delete_book_v2(request, id):
 
 
 # -----------------LAB 11-----------------
-
 # ----------- Task 1 -----------
 
+@login_required(login_url='login')
 def add_student(request):
     if request.method == 'POST':
         form = StudentForm(request.POST)
@@ -298,11 +303,13 @@ def add_student(request):
     return render(request, 'bookmodule/lab11/form_student.html', {'form': form})
 
 
+@login_required(login_url='login')
 def student_list_view(request):
     students = Student.objects.all()
     return render(request, 'bookmodule/lab11/student_list.html', {'students': students})
 
 
+@login_required(login_url='login')
 def edit_student(request, id):
     students = get_object_or_404(Student, id=id)
     form = StudentForm(request.POST or None, instance=students)
@@ -311,7 +318,7 @@ def edit_student(request, id):
         return redirect('student_list')
     return render(request, 'bookmodule/lab11/form_student.html', {'form': form, 'title': 'تعديل الطالب'})
 
-
+@login_required(login_url='login')
 def delete_student(request, id):
     student = get_object_or_404(Student, id=id)
     student.delete()
@@ -319,6 +326,7 @@ def delete_student(request, id):
 
 # ----------- Task 2 -----------
 
+@login_required(login_url='login')
 def add_student2(request):
     if request.method == 'POST':
         form = Student2Form(request.POST)
@@ -329,10 +337,12 @@ def add_student2(request):
         form = Student2Form()
     return render(request, 'bookmodule/lab11/form_student_task2.html', {'form': form})
 
+@login_required(login_url='login')
 def student_list_view2(request):
     students = Student2.objects.all()
     return render(request, 'bookmodule/lab11/student_list_task2.html', {'students': students})
 
+@login_required(login_url='login')
 def edit_student2(request, id):
     student = get_object_or_404(Student2, id=id)
     form = Student2Form(request.POST or None, instance=student)
@@ -341,6 +351,7 @@ def edit_student2(request, id):
         return redirect('student_list2')
     return render(request, 'bookmodule/lab11/form_student_task2.html', {'form': form, 'title': 'تعديل الطالب'})
 
+@login_required(login_url='login')
 def delete_student2(request, id):
     student = get_object_or_404(Student2, id=id)
     student.delete()
@@ -348,11 +359,13 @@ def delete_student2(request, id):
 
 # ----------- Task 3 -----------
 
+@login_required(login_url='login')
 def profile_list_view(request):
     profiles = Profile.objects.all()
     return render(request, 'bookmodule/lab11/profile_list.html', {'profiles': profiles})
 
-# دالة إضافة بروفايل مع صورة (File Handling) 
+# دالة إضافة بروفايل مع صورة (File Handling)
+@login_required(login_url='login') 
 def add_profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES)
@@ -362,3 +375,40 @@ def add_profile(request):
     else:
         form = ProfileForm()
     return render(request, 'bookmodule/lab11/add_profile.html', {'form': form})
+
+
+# -----------------LAB 12-----------------
+
+# Task 1: التسجيل
+def register_user(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول.')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'bookmodule/lab12/register.html', {'form': form})
+
+# Task 2: تسجيل الدخول
+def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.info(request, f'مرحباً بك، {user.username}!')
+            return redirect('student_list') 
+        else:
+            messages.error(request, 'خطأ في اسم المستخدم أو كلمة المرور.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'bookmodule/lab12/login.html', {'form': form})
+
+# Task 4: تسجيل الخروج
+def logout_user(request):
+    logout(request)
+    messages.warning(request, 'لقد سجلت الخروج.')
+    return redirect('login')
+

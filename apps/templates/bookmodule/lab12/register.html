@@ -1,0 +1,7 @@
+<h2>إنشاء حساب جديد</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">تسجيل</button>
+</form>
+<p>لديك حساب؟ <a href="{% url 'login' %}">سجل دخولك هنا</a></p>

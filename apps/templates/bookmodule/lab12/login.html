@@ -1,0 +1,16 @@
+<h2>تسجيل الدخول</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">دخول</button>
+</form>
+
+<p>ليس لديك حساب؟ <a href="{% url 'register' %}">سجل هنا</a></p>

@@ -57,4 +57,10 @@ urlpatterns = [
     path('lab11/deleteStudent/<int:id>', views.delete_student, name='delete_student'),
     path('lab11/deleteStudent2/<int:id>', views.delete_student2, name='delete_student2'),
 
+# ----------LAB 12-----------
+
+    path('users/register/', views.register_user, name='register'),
+    path('users/login/', views.login_user, name='login'),
+    path('users/logout/', views.logout_user, name='logout'),
+
 ]
